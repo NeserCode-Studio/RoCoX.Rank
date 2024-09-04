@@ -12,9 +12,10 @@ import { useStorage, useThrottleFn } from "@vueuse/core"
 import { getCurrentWindow } from "@tauri-apps/api/window"
 
 import { useDark } from "../../composables/useDark"
+import { useTitleStore } from "../../store"
 
 const appWindow = getCurrentWindow()
-const titleText = useStorage("app-title-text", "Dynamic Title")
+const { title: titleText } = useTitleStore()
 
 const isAlwaysonTop = useStorage("app-always-on-top", false)
 
@@ -104,7 +105,7 @@ const { isDark, toggle: toggleDark } = useDark()
 #app-title-bar {
 	@apply relative inline-flex items-center justify-end w-full h-8
 	border-b border-slate-300 dark:border-slate-600
-	bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-200
+	bg-slate-100 dark:bg-slate-900 text-slate-600 dark:text-slate-200
 	transition-all
   select-none;
 

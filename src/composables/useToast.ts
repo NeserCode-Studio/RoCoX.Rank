@@ -3,7 +3,6 @@ import { toast as sonnerToast, type ToasterProps } from "vue-sonner"
 export const useToast = (options: ToasterProps = {}) => {
 	const toastOptions: ToasterProps = Object.assign<ToasterProps, ToasterProps>(
 		{
-			closeButton: true,
 			richColors: true,
 			duration: 10000,
 		},
@@ -15,6 +14,9 @@ export const useToast = (options: ToasterProps = {}) => {
 			sonnerToast(`${message}`, {
 				...toastOptions,
 			})
+		},
+		promise: (promise: Promise<any>, data: any) => {
+			sonnerToast.promise(promise, { ...data })
 		},
 		success: (message: string) => {
 			sonnerToast.success(`${message}`, {

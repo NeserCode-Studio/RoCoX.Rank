@@ -15,10 +15,18 @@ const computedColorSchemeClass = computed(() =>
 	<div id="app-main">
 		<Titlebar />
 		<Toaster :theme="computedColorSchemeClass" richColors />
-		<router-link to="/">Home</router-link>
-		<router-link to="/about">About</router-link>
+		<div>
+			<router-link to="/">Home</router-link>
+			<router-link to="/about">About</router-link>
+		</div>
 		<router-view></router-view>
 	</div>
 </template>
 
-<style lang="postcss" scoped></style>
+<style lang="postcss" scoped>
+#app-main {
+	@apply flex flex-col justify-start items-center h-screen
+	bg-slate-50 dark:bg-slate-800
+	transition-colors ease-in-out duration-200;
+}
+</style>
