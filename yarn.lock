@@ -393,6 +393,13 @@
     "@tauri-apps/cli-win32-ia32-msvc" "2.0.0-rc.10"
     "@tauri-apps/cli-win32-x64-msvc" "2.0.0-rc.10"
 
+"@tauri-apps/plugin-http@^2.0.0-rc.2":
+  version "2.0.0-rc.2"
+  resolved "https://registry.npmmirror.com/@tauri-apps/plugin-http/-/plugin-http-2.0.0-rc.2.tgz#385a3c0808db86b59ab0b183c85e4fd2de989cbd"
+  integrity sha512-s/AbbMaQPgqnIOoObvWNAjJOV17gyf9G+U6gmvjLoFbt7D6jsujOUW6fn+Oe/+rzNSEeo1ZSVrUoMen5DgM+OA==
+  dependencies:
+    "@tauri-apps/api" "^2.0.0-rc.4"
+
 "@tauri-apps/plugin-shell@>=2.0.0-rc.0":
   version "2.0.0-rc.1"
   resolved "https://registry.npmmirror.com/@tauri-apps/plugin-shell/-/plugin-shell-2.0.0-rc.1.tgz#9facf3bbcedfa2de676cb4cfc703687377aa12a3"
@@ -1404,6 +1411,11 @@ vue-router@4:
   integrity sha512-sv6wmNKx2j3aqJQDMxLFzs/u/mjA9Z5LCgy6BE0f7yFWMjrPLnS/sPNn8ARY/FXw6byV18EFutn5lTO6+UsV5A==
   dependencies:
     "@vue/devtools-api" "^6.6.3"
+
+vue-sonner@^1.1.5:
+  version "1.1.5"
+  resolved "https://registry.npmmirror.com/vue-sonner/-/vue-sonner-1.1.5.tgz#941b393db6e09d0ec1d5cd0a8b378f4c497bc856"
+  integrity sha512-uwtZgRs1pcqZuPJFOrNdutphZ5UVVjM4zbXMM7E2LAXTGnYIOgPmUZdWDrEeI+IGXCDsY8aRuk5bh3u4rp20Sg==
 
 vue-tsc@^2.0.22:
   version "2.1.4"

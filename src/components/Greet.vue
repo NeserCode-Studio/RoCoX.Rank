@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { ref } from "vue"
 import { invoke } from "@tauri-apps/api/core"
+import { useToast } from "../composables/useToast"
 
 const greetMsg = ref("")
 const name = ref("")
 
+const { success } = useToast()
 async function greet() {
 	// Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
 	greetMsg.value = await invoke("greet", { name: name.value })
+	success(greetMsg.value)
 }
 </script>
 
