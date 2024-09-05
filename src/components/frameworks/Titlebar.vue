@@ -15,7 +15,11 @@ import { useDark } from "../../composables/useDark"
 import { useTitleStore } from "../../store"
 
 const appWindow = getCurrentWindow()
-const { title: titleText } = useTitleStore()
+const titleText = computed(() => {
+	const { title } = useTitleStore()
+
+	return title
+})
 
 const isAlwaysonTop = useStorage("app-always-on-top", false)
 

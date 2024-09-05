@@ -4,7 +4,6 @@ import { ToastPromiseData } from "../shared"
 export const useToast = (options: ToasterProps = {}) => {
 	const toastOptions: ToasterProps = Object.assign<ToasterProps, ToasterProps>(
 		{
-			richColors: true,
 			duration: 10000,
 		},
 		options
