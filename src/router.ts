@@ -14,6 +14,12 @@ const routes: Array<RouteRecordRaw> = [
 		meta: {},
 		component: () => import("./views/About.vue"),
 	},
+	{
+		path: "/sign",
+		name: "Sign",
+		meta: {},
+		component: () => import("./views/Sign.vue"),
+	},
 ]
 
 const router = createRouter({
