@@ -1,29 +1,28 @@
 export type UserState = "Online" | "Offline" | "Blocked"
-export interface UserCreationData {
+export interface UserCreationParams {
 	qq: string
 	username: string
 	password: string
 	name?: string
-	state: UserState
 }
 
-export interface UserUpdateData {
+export interface UserUpdateParams {
 	qq?: string
 	password?: string
 	name?: string
 	state?: UserState
 }
 
-export interface UserSignInData {
+export interface UserTokenClearParams {
+	userId: string
+	password: string
+}
+
+export interface UserSignInParams {
 	username: string
 	password: string
 }
 
-export interface UserSignOutData {
+export interface UserSignOutParams {
 	userId: string
-}
-
-export interface UserTokenClearResponseData {
-	userId: string
-	password: string
 }

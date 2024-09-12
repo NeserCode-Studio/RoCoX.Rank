@@ -3,15 +3,30 @@ import { useStorage } from "@vueuse/core"
 import { ref } from "vue"
 
 import { useToast } from "../composables/useToast"
+import { useApi } from "../composables/useApi"
 
-const usename = ref("")
+const username = ref("")
 const password = ref("")
 const isOpenAutoComplete = useStorage("rocox-input-auto-complete", false)
 
-const { info } = useToast()
+const { info, success } = useToast()
+const { userSignIn } = useApi({ baseUrl: "http://localhost:4444", headers: {} })
 
-const signIn = () => {
-	info([usename.value, password.value].join(" "))
+const userAccessToken = useStorage("user-access-token", "")
+const signIn = async () => {
+	const response = await userSignIn({
+		username: username.value,
+		password: password.value,
+	})
+
+	if ("message" in response) {
+		info(response.message)
+	} else {
+		if ("accessToken" in response && "user" in response) {
+			success(`欢迎，${response.user.name}`)
+			userAccessToken.value = response.accessToken
+		}
+	}
 }
 </script>
 
@@ -24,7 +39,7 @@ const signIn = () => {
 					id="sign-in-username"
 					class="form-input"
 					type="text"
-					v-model="usename"
+					v-model="username"
 					minlength="1"
 					required
 					placeholder="Username"

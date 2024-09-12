@@ -20,7 +20,11 @@ const computedColorSchemeClass = computed(() =>
 			<router-link to="/about">About</router-link>
 			<router-link to="/sign">Sign</router-link>
 		</div>
-		<router-view></router-view>
+		<router-view v-slot="{ Component }">
+			<keep-alive>
+				<component :is="Component" />
+			</keep-alive>
+		</router-view>
 	</div>
 </template>
 

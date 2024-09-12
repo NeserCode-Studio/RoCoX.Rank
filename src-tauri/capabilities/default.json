@@ -13,8 +13,7 @@
 		"core:window:allow-start-dragging",
 		{
 			"identifier": "http:default",
-			"allow": [{ "url": "https://*.tauri.app" }],
-			"deny": [{ "url": "https://private.tauri.app" }]
+			"allow": [{ "url": "http://localhost:4444" }]
 		}
 	]
 }

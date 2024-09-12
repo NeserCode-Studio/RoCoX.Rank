@@ -3,17 +3,44 @@ import { useStorage } from "@vueuse/core"
 import { ref } from "vue"
 
 import { useToast } from "../composables/useToast"
+import { useApi } from "../composables/useApi"
 
-const usename = ref("")
+const username = ref("")
 const password = ref("")
 const passwordConfirm = ref("")
 const qq = ref("")
+const nickname = ref("")
 const isOpenAutoComplete = useStorage("rocox-input-auto-complete", false)
 
-const { info } = useToast()
+const { info, error } = useToast()
+const { userSignUp } = useApi({ baseUrl: "http://localhost:4444", headers: {} })
 
 const signUp = () => {
-	info([usename.value, password.value].join(" "))
+	if (password.value !== passwordConfirm.value) {
+		password.value = ""
+		passwordConfirm.value = ""
+		return error("两次密码不一致")
+	}
+
+	userSignUp({
+		username: username.value,
+		password: password.value,
+		qq: qq.value,
+		name: nickname.value,
+	})
+		.then(() => {
+			info(`Sign up as ${username.value}`)
+		})
+		.catch((err) => {
+			error(err.message)
+		})
+		.finally(() => {
+			username.value = ""
+			password.value = ""
+			passwordConfirm.value = ""
+			qq.value = ""
+			nickname.value = ""
+		})
 }
 </script>
 
@@ -21,12 +48,12 @@ const signUp = () => {
 	<div class="sign-up">
 		<form @submit.prevent="signUp" class="sign-up-form">
 			<span class="form-item">
-				<label class="labels" for="sign-up-username">用户名</label>
+				<label class="labels" for="sign-up-username">用户名*</label>
 				<input
 					id="sign-up-username"
 					class="form-input"
 					type="text"
-					v-model="usename"
+					v-model="username"
 					minlength="1"
 					required
 					placeholder="Username"
@@ -34,7 +61,7 @@ const signUp = () => {
 				/>
 			</span>
 			<span class="form-item">
-				<label class="labels" for="sign-up-password">密码</label>
+				<label class="labels" for="sign-up-password">密码*</label>
 				<input
 					id="sign-up-password"
 					class="form-input"
@@ -47,7 +74,7 @@ const signUp = () => {
 				/>
 			</span>
 			<span class="form-item">
-				<label class="labels" for="sign-up-password">确认密码</label>
+				<label class="labels" for="sign-up-password-confirm">确认密码*</label>
 				<input
 					id="sign-up-password-confirm"
 					class="form-input"
@@ -60,7 +87,7 @@ const signUp = () => {
 				/>
 			</span>
 			<span class="form-item">
-				<label class="labels" for="sign-up-password">QQ</label>
+				<label class="labels" for="sign-up-qq">QQ*</label>
 				<input
 					id="sign-up-qq"
 					class="form-input"
@@ -69,6 +96,19 @@ const signUp = () => {
 					minlength="6"
 					required
 					placeholder="QQ Number"
+					:autocomplete="isOpenAutoComplete ? 'on' : 'off'"
+				/>
+			</span>
+			<span class="form-item">
+				<label class="labels" for="sign-up-nickname">昵称</label>
+				<input
+					id="sign-up-nickname"
+					class="form-input"
+					type="text"
+					v-model="nickname"
+					minlength="1"
+					maxlength="7"
+					placeholder="Nickname"
 					:autocomplete="isOpenAutoComplete ? 'on' : 'off'"
 				/>
 			</span>
