@@ -20,6 +20,12 @@ const routes: Array<RouteRecordRaw> = [
 		meta: {},
 		component: () => import("./views/Sign.vue"),
 	},
+	{
+		path: "/user/:id",
+		name: "User",
+		meta: {},
+		component: () => import("./views/User.vue"),
+	},
 ]
 
 const router = createRouter({

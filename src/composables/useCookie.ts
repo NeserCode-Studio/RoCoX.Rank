@@ -130,6 +130,18 @@ function withoutTimestamp(cookie: string[]) {
 	})
 }
 
+function deployCookie(name?: string) {
+	if (!document) return
+	if (name && allCookies.value.some((cookie) => cookie.name === name)) {
+		let cookie = allCookies.value.find((cookie) => cookie.name === name)!
+		document.cookie = cookieToString(cookie)
+	} else if (!name) {
+		allCookies.value.forEach((cookie) => {
+			document.cookie = cookieToString(cookie)
+		})
+	}
+}
+
 export const useCookie = () => {
 	return {
 		allCookies,
@@ -138,5 +150,6 @@ export const useCookie = () => {
 		setCookie,
 		stringToCookie,
 		cookieToString,
+		deployCookie,
 	}
 }

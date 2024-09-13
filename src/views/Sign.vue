@@ -3,42 +3,6 @@ import { UserIcon, UserPlusIcon } from "@heroicons/vue/24/solid"
 import { TabGroup, TabList, Tab, TabPanels, TabPanel } from "@headlessui/vue"
 import SignIn from "../components/SignIn.vue"
 import SignUp from "../components/SignUp.vue"
-import { onMounted } from "vue"
-import { useApi } from "../composables/useApi"
-import { useToast } from "../composables/useToast"
-import { useStorage } from "@vueuse/core"
-import { useTitleStore, useUserStore } from "../store"
-
-const { warning, success, error } = useToast({ duration: 2000 })
-const userAccessToken = useStorage("user-access-token", "")
-const { userSignInfo, appCookies, userSignRefresh } = useApi({
-	baseUrl: "http://localhost:4444",
-	headers: {},
-})
-const { update: setUser } = useUserStore()
-const { setTitle } = useTitleStore()
-
-onMounted(async () => {
-	const userInfo = await userSignInfo()
-
-	if ("message" in userInfo) warning(userInfo.message)
-	else success(`欢迎，${userInfo.name}`)
-
-	setUser(userInfo)
-	setTitle(`${userInfo.name} Login`)
-
-	const cookies = await appCookies()
-	setTimeout(async () => {
-		if ("refresh_token" in cookies.signed) {
-			success("Refresh Token Generating...")
-			const refreshData = await userSignRefresh()
-			if ("accessToken" in refreshData)
-				userAccessToken.value = refreshData.accessToken
-		} else {
-			error("Refresh Token Not Valid")
-		}
-	}, 2000)
-})
 </script>
 
 <template>

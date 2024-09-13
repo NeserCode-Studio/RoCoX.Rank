@@ -1,5 +1,6 @@
 import {
 	ApiOptions,
+	FindUserParams,
 	UserCreationParams,
 	UserSignInParams,
 	UserSignOutParams,
@@ -22,5 +23,7 @@ export const useApi = (options: ApiOptions) => {
 			api.post("/v1/user/sign/clear", { ...params }),
 		userSignRefresh: () => api.get("/v1/user/sign/refresh"),
 		appCookies: () => api.get("/cookies"),
+		findUser: (params: FindUserParams) =>
+			api.post("/v1/user/find", { ...params }),
 	}
 }
