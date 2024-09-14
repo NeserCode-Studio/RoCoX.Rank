@@ -1,9 +1,10 @@
 <script lang="ts" setup>
-import { computed, watch } from "vue"
-import { useRoute } from "vue-router"
+import { computed } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import { useApi } from "../composables/useApi"
 import { useUserStore } from "../store"
-import { watchOnce } from "@vueuse/core"
+import { useStorage, watchOnce } from "@vueuse/core"
+import { useCookie } from "../composables/useCookie"
 
 const $route = useRoute()
 const params = computed(() => $route.params as { id: string })
@@ -17,7 +18,7 @@ const { userSignOut } = useApi({
 	headers: {},
 })
 
-watchOnce(
+const generator = watchOnce(
 	() => params.value.id,
 	async (newId) => {
 		console.log("[Debug User]", newId)
@@ -37,9 +38,27 @@ watchOnce(
 	{ immediate: true }
 )
 
+const $router = useRouter()
+watchOnce(
+	() => userState.id,
+	(oldId, newId) => {
+		if (newId?.length && !oldId?.length) {
+			generator()
+			$router.push({ name: "Sign" })
+		}
+	}
+)
+
+const userAccessToken = useStorage("user-access-token", "")
+const { clearCookie } = useCookie()
 const signOut = () => {
 	userSignOut({ userId: userState.id })
+	userAccessToken.value = ""
+	userState.reset()
+	clearCookie("refresh_token")
 }
+
+generator()
 </script>
 
 <template>

@@ -19,5 +19,12 @@ export const useUserStore = defineStore("user-data", {
 			this.id = data.id
 			this.state = data.state
 		},
+		reset() {
+			this.username = ""
+			this.name = ""
+			this.qq = ""
+			this.id = ""
+			this.state = "Offline"
+		},
 	},
 })

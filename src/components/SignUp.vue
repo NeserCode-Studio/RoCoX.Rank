@@ -4,6 +4,7 @@ import { ref } from "vue"
 
 import { useToast } from "../composables/useToast"
 import { useApi } from "../composables/useApi"
+import { useRouter } from "vue-router"
 
 const username = ref("")
 const password = ref("")
@@ -15,6 +16,7 @@ const isOpenAutoComplete = useStorage("rocox-input-auto-complete", false)
 const { info, error } = useToast()
 const { userSignUp } = useApi({ baseUrl: "http://localhost:4444", headers: {} })
 
+const $router = useRouter()
 const signUp = () => {
 	if (password.value !== passwordConfirm.value) {
 		password.value = ""
@@ -28,11 +30,12 @@ const signUp = () => {
 		qq: qq.value,
 		name: nickname.value,
 	})
-		.then(() => {
-			info(`Sign up as ${username.value}`)
-		})
-		.catch((err) => {
-			error(err.message)
+		.then((res) => {
+			if ("message" in res) error(res.message)
+			else {
+				info(`Sign up as ${username.value}`)
+				$router.push("/sign")
+			}
 		})
 		.finally(() => {
 			username.value = ""
