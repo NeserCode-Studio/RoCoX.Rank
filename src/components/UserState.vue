@@ -60,13 +60,14 @@ onMounted(async () => {
 <style lang="postcss" scoped>
 .user-state {
 	@apply inline-flex justify-center items-center px-2 py-1
-  rounded bg-slate-200 dark:bg-slate-700 shadow;
+  rounded bg-slate-200 dark:bg-slate-700;
 }
 .user-state:has(.info) {
 	@apply pr-2;
 }
 .user-state:has(.router-link-exact-active) {
-	@apply bg-green-300 dark:bg-green-600;
+	@apply bg-green-300 dark:bg-green-600
+	text-slate-500 dark:text-slate-800;
 }
 
 .user-state .icon {
@@ -77,7 +78,7 @@ onMounted(async () => {
 }
 
 .info {
-	@apply flex flex-col justify-center items-end;
+	@apply flex flex-col justify-center items-start;
 }
 
 .info .nickname {
@@ -85,6 +86,9 @@ onMounted(async () => {
 }
 
 .info .id {
-	@apply text-xs text-gray-400 dark:text-gray-200;
+	@apply text-xs text-slate-600 dark:text-slate-300;
+}
+.user-state:has(.router-link-exact-active) .info .id {
+	@apply text-slate-500 dark:text-slate-700;
 }
 </style>

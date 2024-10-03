@@ -2,7 +2,7 @@
 import { computed } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useApi } from "../composables/useApi"
-import { useUserStore } from "../store"
+import { useUserStore, useWatchingUserStore } from "../store"
 import { useStorage, watchOnce } from "@vueuse/core"
 import { useCookie } from "../composables/useCookie"
 
@@ -13,6 +13,7 @@ const { findUser } = useApi({
 	headers: {},
 })
 const userState = useUserStore()
+const watchingUserState = useWatchingUserStore()
 const { userSignOut } = useApi({
 	baseUrl: "http://localhost:4444",
 	headers: {},
@@ -27,7 +28,7 @@ const generator = watchOnce(
 			payload: newId,
 		})
 
-		userState.update({
+		watchingUserState.update({
 			id: userInfo.id,
 			username: userInfo.username,
 			name: userInfo.name,
@@ -40,7 +41,7 @@ const generator = watchOnce(
 
 const $router = useRouter()
 watchOnce(
-	() => userState.id,
+	() => watchingUserState.id,
 	(oldId, newId) => {
 		if (newId?.length && !oldId?.length) {
 			generator()
@@ -54,6 +55,7 @@ const { clearCookie } = useCookie()
 const signOut = () => {
 	userSignOut({ userId: userState.id })
 	userAccessToken.value = ""
+	watchingUserState.reset()
 	userState.reset()
 	clearCookie("refresh_token")
 }
@@ -74,7 +76,13 @@ generator()
 			<span class="state">{{ userState.state }}</span>
 		</p>
 
-		<button type="button" @click="signOut">Logout</button>
+		<button
+			type="button"
+			@click="signOut"
+			v-if="userState.id === watchingUserState.id"
+		>
+			Logout
+		</button>
 	</div>
 </template>
 

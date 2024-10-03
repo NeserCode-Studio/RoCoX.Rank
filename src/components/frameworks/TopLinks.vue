@@ -45,6 +45,6 @@ import UserState from "../UserState.vue"
 }
 
 .state.user-state {
-	@apply right-4;
+	@apply left-4;
 }
 </style>
