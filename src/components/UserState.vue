@@ -1,10 +1,10 @@
 <script lang="ts" setup>
-import { ArrowPathIcon } from "@heroicons/vue/24/solid"
+import { ArrowPathIcon, SignalSlashIcon } from "@heroicons/vue/24/solid"
 
 import { useStorage } from "@vueuse/core"
 import { useApi } from "../composables/useApi"
 import { useToast } from "../composables/useToast"
-import { onMounted } from "vue"
+import { onMounted, ref } from "vue"
 import { useUserStore, useTitleStore } from "../store"
 import { useRouter } from "vue-router"
 
@@ -18,31 +18,40 @@ const userState = useUserStore()
 const { setTitle } = useTitleStore()
 
 const $router = useRouter()
+const asyncState = ref(true)
 
 onMounted(async () => {
-	const userInfo = await userSignInfo()
+	asyncState.value = true
 
-	if ("message" in userInfo) {
-		warning(userInfo.message)
-		$router.push({ name: "Sign" })
-	} else {
-		success(`欢迎，${userInfo.name}`)
-		userState.update(userInfo)
+	try {
+		const userInfo = await userSignInfo()
 
-		setTitle(`${userInfo.name} Login`)
+		if ("message" in userInfo) {
+			warning(userInfo.message)
+			$router.push({ name: "Sign" })
+		} else {
+			success(`欢迎，${userInfo.name}`)
+			userState.update(userInfo)
 
-		const cookies = await appCookies()
-		setTimeout(async () => {
-			if ("refresh_token" in cookies.signed) {
-				success("Refresh Token Generating...")
-				const refreshData = await userSignRefresh()
-				if ("accessToken" in refreshData)
-					userAccessToken.value = refreshData.accessToken
-			} else {
-				console.log("[Debug Refresh Token]", cookies)
-				warning("Refresh Token Not Valid")
-			}
-		}, 2000)
+			setTitle(`${userInfo.name} Login`)
+
+			const cookies = await appCookies()
+			setTimeout(async () => {
+				if ("refresh_token" in cookies.signed) {
+					success("Refresh Token Generating...")
+					const refreshData = await userSignRefresh()
+					if ("accessToken" in refreshData)
+						userAccessToken.value = refreshData.accessToken
+				} else {
+					console.log("[Debug Refresh Token]", cookies)
+					warning("Refresh Token Not Valid")
+				}
+			}, 2000)
+		}
+	} catch {
+		warning("获取用户信息失败")
+	} finally {
+		asyncState.value = false
 	}
 })
 </script>
@@ -53,6 +62,7 @@ onMounted(async () => {
 			<span class="nickname">{{ userState.name }}</span>
 			<span class="id">#{{ userState.id.substring(0, 8) }}</span>
 		</RouterLink>
+		<SignalSlashIcon class="icon" v-else-if="!asyncState" />
 		<ArrowPathIcon class="icon async" v-else />
 	</div>
 </template>
