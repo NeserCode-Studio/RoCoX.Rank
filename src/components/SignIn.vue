@@ -3,6 +3,7 @@ import { useStorage } from "@vueuse/core"
 import { nextTick, ref } from "vue"
 import { useRouter } from "vue-router"
 
+import { useUserStore } from "../store"
 import { useToast } from "../composables/useToast"
 import { useApi } from "../composables/useApi"
 
@@ -14,6 +15,7 @@ const { info, success } = useToast()
 const { userSignIn } = useApi({ baseUrl: "http://localhost:4444", headers: {} })
 
 const userAccessToken = useStorage("user-access-token", "")
+const userState = useUserStore()
 
 const $router = useRouter()
 const signIn = async () => {
@@ -28,6 +30,9 @@ const signIn = async () => {
 		if ("accessToken" in response && "user" in response) {
 			success(`欢迎，${response.user.name}`)
 			userAccessToken.value = response.accessToken
+			userState.update({
+				...response.user,
+			})
 			nextTick(() => {
 				$router.push(`/user/${response.user.id}`)
 			})

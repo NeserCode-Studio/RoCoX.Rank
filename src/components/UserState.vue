@@ -4,7 +4,7 @@ import { ArrowPathIcon, SignalSlashIcon } from "@heroicons/vue/24/solid"
 import { useStorage } from "@vueuse/core"
 import { useApi } from "../composables/useApi"
 import { useToast } from "../composables/useToast"
-import { onMounted, ref } from "vue"
+import { computed, onMounted, ref } from "vue"
 import { useUserStore, useTitleStore } from "../store"
 import { useRouter } from "vue-router"
 
@@ -19,6 +19,7 @@ const { setTitle } = useTitleStore()
 
 const $router = useRouter()
 const asyncState = ref(true)
+const userOnline = computed(() => !!userState.id.length)
 
 onMounted(async () => {
 	asyncState.value = true
@@ -58,11 +59,14 @@ onMounted(async () => {
 
 <template>
 	<div class="user-state">
-		<RouterLink class="info" :to="`/user/${userState.id}`" v-if="userState.id">
+		<RouterLink class="info" :to="`/user/${userState.id}`" v-if="userOnline">
 			<span class="nickname">{{ userState.name }}</span>
 			<span class="id">#{{ userState.id.substring(0, 8) }}</span>
 		</RouterLink>
-		<SignalSlashIcon class="icon" v-else-if="!asyncState" />
+		<RouterLink class="info offline" to="/sign" v-else-if="!asyncState">
+			<SignalSlashIcon class="icon" />
+			<span class="text">Offline</span>
+		</RouterLink>
 		<ArrowPathIcon class="icon async" v-else />
 	</div>
 </template>
@@ -100,5 +104,10 @@ onMounted(async () => {
 }
 .user-state:has(.router-link-exact-active) .info .id {
 	@apply text-slate-500 dark:text-slate-700;
+}
+
+.info.offline {
+	@apply flex-row items-center gap-x-1
+	text-sm;
 }
 </style>

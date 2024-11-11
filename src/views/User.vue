@@ -1,10 +1,11 @@
 <script lang="ts" setup>
-import { computed } from "vue"
+import { computed, onMounted } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useApi } from "../composables/useApi"
 import { useUserStore, useWatchingUserStore } from "../store"
 import { useStorage, watchOnce } from "@vueuse/core"
 import { useCookie } from "../composables/useCookie"
+import { useToast } from "../composables/useToast"
 
 const $route = useRoute()
 const params = computed(() => $route.params as { id: string })
@@ -18,6 +19,7 @@ const { userSignOut } = useApi({
 	baseUrl: "http://localhost:4444",
 	headers: {},
 })
+const { success } = useToast({ duration: 3000 })
 
 const generator = watchOnce(
 	() => params.value.id,
@@ -58,9 +60,13 @@ const signOut = () => {
 	watchingUserState.reset()
 	userState.reset()
 	clearCookie("refresh_token")
+	$router.push({ path: "/sign" })
+	success("已成功登出")
 }
 
-generator()
+onMounted(() => {
+	generator()
+})
 </script>
 
 <template>
