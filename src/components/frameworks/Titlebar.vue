@@ -65,7 +65,9 @@ const { isDark, toggle: toggleDark } = useDark()
 <template>
 	<div id="app-title-bar" data-tauri-drag-region>
 		<span class="title" data-tauri-drag-region>
-			<span data-tauri-drag-region>{{ titleText }} · Static</span>
+			<span data-tauri-drag-region
+				>{{ titleText }} · Roco X Rank Generator</span
+			>
 		</span>
 		<div class="buttons" data-tauri-drag-region>
 			<span

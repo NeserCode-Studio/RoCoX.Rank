@@ -5,6 +5,7 @@ import { computed, onMounted } from "vue"
 
 import { useDark } from "./composables/useDark"
 import { useCookie } from "./composables/useCookie"
+import { useFocus } from "./composables/useFocus"
 import TopLinks from "./components/frameworks/TopLinks.vue"
 
 const { isDark } = useDark()
@@ -14,13 +15,15 @@ const computedColorSchemeClass = computed(() =>
 
 const { deployCookie } = useCookie()
 
-onMounted(() => {
+onMounted(async () => {
 	deployCookie()
+	const { listener: setupFocus } = await useFocus()
+	await setupFocus()
 })
 </script>
 
 <template>
-	<div id="app-main">
+	<div id="app-main" ondragstart="return false">
 		<Titlebar />
 		<Toaster :theme="computedColorSchemeClass" richColors />
 

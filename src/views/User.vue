@@ -71,18 +71,19 @@ onMounted(() => {
 
 <template>
 	<div class="user-main">
-		<p>
+		<p class="name">
 			<span class="nickname">{{ userState.name }}</span>
 		</p>
-		<p>
+		<p class="info">
 			<span class="username">{{ userState.username }}</span>
-			<span class="id">{{ userState.id }}</span>
+			<span class="id">#{{ userState.id }}</span>
 		</p>
-		<p>
+		<p class="state">
 			<span class="state">{{ userState.state }}</span>
 		</p>
 
 		<button
+			class="logout"
 			type="button"
 			@click="signOut"
 			v-if="userState.id === watchingUserState.id"
@@ -92,4 +93,24 @@ onMounted(() => {
 	</div>
 </template>
 
-<style lang="postcss" scoped></style>
+<style lang="postcss" scoped>
+.user-main {
+	@apply inline-flex flex-col items-center py-12 gap-2
+	select-none;
+}
+
+.name {
+	@apply text-3xl font-bold;
+}
+.info {
+	@apply inline-flex justify-center items-center gap-2
+	opacity-60;
+}
+
+.logout {
+	@apply px-4 py-2 rounded-md bg-red-500 text-white
+	transition-all duration-300 ease-in-out
+	cursor-pointer shadow
+	opacity-80 hover:opacity-100;
+}
+</style>
