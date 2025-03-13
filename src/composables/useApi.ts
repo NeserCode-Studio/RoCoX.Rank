@@ -1,29 +1,47 @@
 import {
-	ApiOptions,
-	FindUserParams,
-	UserCreationParams,
-	UserSignInParams,
-	UserSignOutParams,
-	UserTokenClearParams,
-} from "../shared"
-import { RocoxApi } from "./useHttp"
+  ApiOptions,
+  UserQueryParams,
+  UserCreationParams,
+  UserSignInParams,
+  UserSignOutParams,
+  UserSignRefreshParams,
+  UserSignInResult,
+  BaseErrorResult,
+  SafeUser,
+  UserSignRefreshResult,
+} from "../shared";
+import { RocoxApi } from "./useHttp";
+import { useStorage, watchImmediate } from "@vueuse/core";
 
 export const useApi = (options: ApiOptions) => {
-	const api = new RocoxApi(options.baseUrl, options.headers)
+  const api = new RocoxApi(options.baseUrl, options.headers);
+  const userAccessToken = useStorage("user-access-token", "");
 
-	return {
-		userSignUp: (params: UserCreationParams) =>
-			api.post("/v1/user/sign/up", { ...params }),
-		userSignIn: (params: UserSignInParams) =>
-			api.post("/v1/user/sign/in", { ...params }),
-		userSignOut: (params: UserSignOutParams) =>
-			api.post("/v1/user/sign/out", { ...params }),
-		userSignInfo: () => api.get("/v1/user/sign/verify"),
-		userSignClear: (params: UserTokenClearParams) =>
-			api.post("/v1/user/sign/clear", { ...params }),
-		userSignRefresh: () => api.get("/v1/user/sign/refresh"),
-		appCookies: () => api.get("/cookies"),
-		findUser: (params: FindUserParams) =>
-			api.post("/v1/user/find", { ...params }),
-	}
-}
+  watchImmediate(userAccessToken, (token) => {
+    api.setAuthorization(token);
+  });
+
+  return {
+    userSignUp: (params: UserCreationParams) =>
+      api.post("/user/sign/up", { ...params }),
+
+    userSignIn: (params: UserSignInParams) =>
+      api.post<UserSignInResult | BaseErrorResult>("/user/sign/in", {
+        ...params,
+      }),
+
+    userSignOut: (params: UserSignOutParams) =>
+      api.post("/user/sign/out", { ...params }),
+
+    userSignInfo: () =>
+      api.get<SafeUser | BaseErrorResult>("/user/sign/verify"),
+
+    userSignRefresh: (params: UserSignRefreshParams) =>
+      api.post<UserSignRefreshResult | BaseErrorResult>("/user/sign/refresh", {
+        ...params,
+      }),
+
+    userQuery: (params: UserQueryParams) =>
+      api.get<SafeUser | BaseErrorResult>(`/user/query/${params.username}`),
+  };
+};

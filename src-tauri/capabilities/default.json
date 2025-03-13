@@ -16,7 +16,7 @@
 		"core:event:allow-listen",
 		{
 			"identifier": "http:default",
-			"allow": [{ "url": "http://localhost:4444" }]
+			"allow": [{ "url": "http://localhost:3000" }]
 		}
 	]
 }

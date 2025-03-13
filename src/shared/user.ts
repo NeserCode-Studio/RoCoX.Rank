@@ -1,64 +1,70 @@
-export type UserState = "Online" | "Offline" | "Blocked"
-export type RankStandard = "I" | "II" | "III" | "IV" | "V" | "X"
-export type RankLevel = "E" | "D" | "C" | "B" | "A" | "S"
+export type UserState = "Online" | "Offline" | "Blocked";
+export type RankStandard = "I" | "II" | "III" | "IV" | "V" | "X";
+export type RankLevel = "E" | "D" | "C" | "B" | "A" | "S";
 
-export type RankType = "Score" | "Shiftscore" | "Badge" | "Custom"
+export type RankType = "Score" | "Shiftscore" | "Badge" | "Custom";
 
 export interface Rank {
-	id: number
-	userId: string
-	rocoName: string
-	level: RankLevel
-	standard: RankStandard
-	star: number
+  id: number;
+  userId: string;
+  rocoName: string;
+  level: RankLevel;
+  standard: RankStandard;
+  star: number;
 
-	createAt: Date
-	updateAt: Date
+  createAt: Date;
+  updateAt: Date;
 }
 
-export interface User {
-	id: string
-	qq: string
-	username: string
-	name: string
-	password?: string
-	state: UserState
-
-	rank?: Rank
-
-	createAt?: Date
-	updateAt?: Date
-}
+export type User = {
+  username: string;
+  password: string;
+  id: string;
+  usernameHash: string;
+  nickname: string;
+  qq: string;
+  email: string;
+  rocoName: string;
+  state: UserState;
+  roomId: string | null;
+  createAt: Date;
+  updateAt: Date;
+};
+export type SafeUser = Omit<User, "password">;
 
 export interface UserCreationParams {
-	qq: string
-	username: string
-	password: string
-	name?: string
+  qq: string;
+  username: string;
+  password: string;
+  name?: string;
+}
+
+export interface UserSignRefreshParams {
+  uid: string;
+}
+export interface UserSignRefreshResult {
+  $access_token: string;
 }
 
 export interface UserUpdateParams {
-	qq?: string
-	password?: string
-	name?: string
-	state?: UserState
-}
-
-export interface UserTokenClearParams {
-	userId: string
-	password: string
+  qq?: string;
+  password?: string;
+  name?: string;
+  state?: UserState;
 }
 
 export interface UserSignInParams {
-	username: string
-	password: string
+  username: string;
+  password: string;
+}
+export interface UserSignInResult {
+  $access_token: string;
 }
 
 export interface UserSignOutParams {
-	userId: string
+  uid: string;
 }
 
-export interface FindUserParams {
-	type: "id" | "qq" | "username" | "socketId"
-	payload: string
+export interface UserQueryParams {
+  username: string;
 }
