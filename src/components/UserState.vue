@@ -29,22 +29,23 @@ onMounted(async () => {
     const userInfo = await userSignInfo();
 
     if ("message" in userInfo) {
-      warning(userInfo.message ?? "Invlid Operation");
-      $router.push({ name: "Sign" });
-    } else if ("id" in userInfo) {
-      success(`欢迎，${userInfo.nickname}`);
-      userState.update(userInfo);
-
-      setTitle(`${userInfo.nickname} Login`);
-
       const { allCookies } = useCookie();
-      if ("$refresh" in allCookies.value) {
+      if (allCookies.value.some((cookie) => cookie.name === "$refresh")) {
         success("Refresh Token Generating...");
-        const refreshData = await userSignRefresh({ uid: userInfo.id });
+        const refreshData = await userSignRefresh({ uid: userState.id });
         if ("$access_token" in refreshData)
           userAccessToken.value = refreshData.$access_token;
         else warning("Refresh Token Not Valid");
+        console.log(refreshData);
+      } else {
+        warning(userInfo.message ?? "Invlid Operation");
+        $router.push({ name: "Sign" });
       }
+    } else if ("id" in userInfo) {
+      userState.update(userInfo);
+      success(`欢迎，${userState.displayName}`);
+
+      setTitle(`As ${userState.displayName}`);
     }
   } catch {
     warning("获取用户信息失败");
@@ -57,7 +58,7 @@ onMounted(async () => {
 <template>
   <div class="user-state">
     <RouterLink class="info" :to="`/user/${userState.id}`" v-if="userOnline">
-      <span class="nickname">{{ userState.name }}</span>
+      <span class="nickname">{{ userState.displayName }}</span>
       <span class="id">#{{ userState.id.substring(0, 8) }}</span>
     </RouterLink>
     <RouterLink class="info offline" to="/sign" v-else-if="!asyncState">

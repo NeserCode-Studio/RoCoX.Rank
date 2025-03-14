@@ -31,32 +31,20 @@ const signIn = async () => {
     warning(signData.message ?? "Failed Operation");
   } else if ("$access_token" in signData) {
     userAccessToken.value = signData.$access_token;
-    const signInfo = await userSignInfo();
 
-    if ("message" in signInfo) {
-      warning(signInfo.message ?? "Failed Operation");
-    } else if ("id" in signInfo) {
-      success(`Welcome, ${signInfo.nickname}`);
-      userState.update({
-        ...signInfo,
-      });
-      nextTick(() => {
-        console.log(signInfo);
+    nextTick(async () => {
+      const signInfo = await userSignInfo();
 
+      if ("message" in signInfo)
+        warning(signInfo.message ?? "Failed Operation");
+      else if ("id" in signInfo) {
+        success(`Welcome, ${signInfo.nickname}`);
+        userState.update({
+          ...signInfo,
+        });
         $router.push(`/user/${signInfo.username}`);
-      });
-    }
-
-    // if ("accessToken" in response && "user" in response) {
-    //   success(`欢迎，${response.user.name}`);
-    //   userAccessToken.value = response.accessToken;
-    //   userState.update({
-    //     ...response.user,
-    //   });
-    //   nextTick(() => {
-    //     $router.push(`/user/${response.user.id}`);
-    //   });
-    // }
+      }
+    });
   }
 };
 </script>

@@ -1,13 +1,12 @@
 <script lang="ts" setup>
 import { useRouter } from "vue-router";
 import { useApi } from "../composables/useApi";
-import { useUserStore, useWatchingUserStore } from "../store";
+import { useUserStore } from "../store";
 import { useStorage } from "@vueuse/core";
 import { useCookie } from "../composables/useCookie";
 import { useToast } from "../composables/useToast";
 
 const userState = useUserStore();
-const watchingUserState = useWatchingUserStore();
 const { userSignOut } = useApi({
   baseUrl: "http://localhost:3000",
   headers: {},
@@ -20,7 +19,6 @@ const { clearCookie } = useCookie();
 const signOut = () => {
   userSignOut({ uid: userState.id });
   userAccessToken.value = "";
-  watchingUserState.reset();
   userState.reset();
   clearCookie("refresh_token");
   $router.push({ path: "/sign" });
@@ -31,27 +29,17 @@ const signOut = () => {
 <template>
   <div class="user-main">
     <p class="name">
-      <span class="nickname"
-        >{{ userState.nickname }}
-        {{ userState.usernameHash ? `#{userState.usernameHash}` : null }}</span
-      >
+      <span class="nickname">{{ userState.displayName }}</span>
     </p>
     <p class="info">
       <span class="username">{{ userState.username }}</span>
-      <span class="id">#{{ userState.id }}</span>
-    </p>
-    <p class="state">
       <span class="state">{{ userState.state }}</span>
     </p>
+    <p class="uid">
+      <span class="id">#{{ userState.id }}</span>
+    </p>
 
-    <button
-      class="logout"
-      type="button"
-      @click="signOut"
-      v-if="userState.id === watchingUserState.id"
-    >
-      Logout
-    </button>
+    <button class="logout" type="button" @click="signOut">Logout</button>
   </div>
 </template>
 
@@ -67,6 +55,10 @@ const signOut = () => {
 .info {
   @apply inline-flex justify-center items-center gap-2
 	opacity-60;
+}
+.uid {
+  @apply opacity-0 hover:opacity-100
+  transition-opacity ease-in-out duration-200;
 }
 
 .logout {

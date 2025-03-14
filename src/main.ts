@@ -1,15 +1,18 @@
-import { createApp } from "vue"
-import App from "./App.vue"
+import { createApp } from "vue";
+import App from "./App.vue";
 
 // Vue Router
-import router from "./router"
+import router from "./router";
 // Vue Pinia
-import { createPinia } from "pinia"
-const pinia = createPinia()
+import { createPinia } from "pinia";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
+
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
 /* Style.Tailwind Import */
-import "./style.tailwind.css"
+import "./style.tailwind.css";
 /* Style Constants Import */
-import "./style.constants.css"
+import "./style.constants.css";
 
-createApp(App).use(router).use(pinia).mount("#app")
+createApp(App).use(router).use(pinia).mount("#app");
