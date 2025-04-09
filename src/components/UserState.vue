@@ -31,24 +31,28 @@ onMounted(async () => {
     if ("message" in userInfo) {
       const { allCookies } = useCookie();
       if (allCookies.value.some((cookie) => cookie.name === "$refresh")) {
-        success("Refresh Token Generating...");
+        success("正在配置自动登录");
         const refreshData = await userSignRefresh({ uid: userState.id });
         if ("$access_token" in refreshData)
           userAccessToken.value = refreshData.$access_token;
-        else warning("Refresh Token Not Valid");
-        console.log(refreshData);
+        else {
+          warning("登录环境已失效，请重新登录");
+          userState.reset();
+          userAccessToken.value = "";
+          $router.push({ name: "Sign" });
+        }
       } else {
         warning(userInfo.message ?? "Invlid Operation");
         $router.push({ name: "Sign" });
       }
     } else if ("id" in userInfo) {
       userState.update(userInfo);
-      success(`欢迎，${userState.displayName}`);
+      success(`自动登录为${userState.displayName}`);
 
       setTitle(`As ${userState.displayName}`);
     }
   } catch {
-    warning("获取用户信息失败");
+    warning("获取用户信息失败，请登录");
   } finally {
     asyncState.value = false;
   }
@@ -59,7 +63,7 @@ onMounted(async () => {
   <div class="user-state">
     <RouterLink class="info" :to="`/user/${userState.id}`" v-if="userOnline">
       <span class="nickname">{{ userState.displayName }}</span>
-      <span class="id">#{{ userState.id.substring(0, 8) }}</span>
+      <span class="id">{{ userState.id.substring(0, 8) }}</span>
     </RouterLink>
     <RouterLink class="info offline" to="/sign" v-else-if="!asyncState">
       <SignalSlashIcon class="icon" />
